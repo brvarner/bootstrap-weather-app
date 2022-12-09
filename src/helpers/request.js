@@ -4,7 +4,7 @@ export const request = async (city) => {
   // This is the Geozoning API endpoint that we can use to grab the information
   // about our city's latitude and longitude before submitting our request to
   // the OpenWeather API.
-  const baseURL = `http://api.openweathermap.org/geo/1.0/direct?q=${city.trim()}&limit=5&appid=${key}`;
+  const baseURL = `https://api.openweathermap.org/geo/1.0/direct?q=${city.trim()}&limit=5&appid=${key}`;
   try {
     const response = await fetch(baseURL);
     const json = await response.json();
