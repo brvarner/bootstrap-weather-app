@@ -4,6 +4,6 @@ This app displays the high and low, current temperature for the day, current typ
 
 This app uses data from the [Openweather API](https://openweathermap.org/api)
 
-You can run this project by cloning it and running the `npm start` command.
+You can run this project by cloning it and running the `npm start` command, or visit it on [Vercel](https://bootstrap-weather-app.vercel.app/) to see a fully deployed version in action.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
