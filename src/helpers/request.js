@@ -10,6 +10,8 @@ export const request = async (city) => {
     const json = await response.json();
     let lat = json[0].lat;
     let lng = json[0].lon;
+
+    // Now that we have our lat and long from the geozoning API, we can query the actual Openweather API.
     if (lat && lng) {
       const weatherURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${key}`;
       const weatherRes = await fetch(weatherURL);
