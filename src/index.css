@@ -26,6 +26,12 @@ code {
   border-radius: 80px;
 }
 
+@media (min-width: 1100px) {
+  .back-card {
+    border-radius: 110px;
+  }
+}
+
 .city-name {
   position: absolute;
   width: 100%;

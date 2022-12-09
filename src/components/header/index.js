@@ -1,25 +1,59 @@
 import React, { useEffect, useState } from "react";
 import { request } from "../../helpers/request";
+import BodyCard from "../bodyCard";
+import debounce from "lodash.debounce";
 
 export default function Header() {
   const [city, setCity] = useState("");
+  const [cityData, setCityData] = useState();
+  const [tempData, setTempData] = useState();
 
-  const debounce = (func, timeout = 600) => {
-    let timer;
-    return (...args) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        func.apply(this, args);
-      }, timeout);
-    };
-  };
-
-  let citySearch = (event) => {
-    event.preventDefault();
+  const updateCitySearch = async (event) => {
     setCity(event.target.value);
-    console.log(city, "1");
-    debounce(() => console.log(city, "2"));
   };
+
+  const requester = async (city) => {
+    setCityData(await request(city));
+  };
+
+  const fahrenheitConverter = (tempObj) => {
+    if (tempObj) {
+      let currentTempK = tempObj.temp;
+      let feelsLikeK = tempObj.feels_like;
+      let highK = tempObj.temp_max;
+      let lowK = tempObj.temp_min;
+      let humidity = tempObj.humidity;
+
+      let currentTemp = Math.round((currentTempK * 9) / 5 - 459.67);
+      let feelsLike = Math.round((feelsLikeK * 9) / 5 - 459.67);
+      let high = Math.round((highK * 9) / 5 - 459.67);
+      let low = Math.round((lowK * 9) / 5 - 459.67);
+
+      setTempData({
+        currentTemp,
+        feelsLike,
+        high,
+        low,
+        humidity,
+      });
+    }
+  };
+
+  const debouncedOnChange = debounce(updateCitySearch, 400);
+
+  //   This useEffect triggers whenever the city changes, since it's debounced
+  //  that means that we don't have multiple requests running every time the user types.
+  useEffect(() => {
+    if (city !== "") {
+      requester(city);
+    }
+  }, [city]);
+
+  useEffect(() => {
+    if (cityData) {
+      fahrenheitConverter(cityData?.main);
+    }
+  }, [cityData]);
 
   return (
     <div className="container my-5">
@@ -30,47 +64,10 @@ export default function Header() {
           name="city"
           placeholder="What City?"
           className="form-control text-muted form-rounded p-4 shadow"
-          onKeyUp={(e) => citySearch(e)}
+          onKeyUp={debouncedOnChange}
         />
       </form>
-      <div className="card my-3 shadow-lg back-card">
-        <div className="card-top text-center">
-          <div className="city-name my-3">
-            <p>Abuja</p>
-            <span>...</span>
-          </div>
-          <img
-            src="/img/night_image.svg"
-            alt="Night time background."
-            className="img-fluid card-img-top time"
-          />
-        </div>
-        <div className="card-body">
-          <div className="card-mid row">
-            <div className="col-8 text-center temp">
-              <span>30&deg;F</span>
-            </div>
-            <div className="col-4 condition-temp">
-              <p className="condition">Thunder Storm</p>
-              <p className="high">30&deg;F</p>
-              <p className="low">23&deg;F</p>
-            </div>
-          </div>
-        </div>
-        <div className="icon-container card shadow mx-auto">
-          <img src="img/cloud.svg" alt="Cloud" />
-        </div>
-        <div className="card-bottom px-5 py-4 row">
-          <div className="col text-center">
-            <p>30&deg;F</p>
-            <span>Feels Like:</span>
-          </div>
-          <div className="col text-center">
-            <p>55%</p>
-            <span>Humidity</span>
-          </div>
-        </div>
-      </div>
+      {cityData ? <BodyCard cityData={cityData} tempData={tempData} /> : null}
     </div>
   );
 }
