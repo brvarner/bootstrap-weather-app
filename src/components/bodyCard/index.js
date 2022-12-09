@@ -13,7 +13,11 @@ export default function BodyCard({ cityData, tempData }) {
     <div className="card my-3 shadow-lg back-card">
       <div className="card-top text-center">
         <div className="city-name my-3">
-          <p>{cityData ? cityData.name : "Enter City"}</p>
+          <p>
+            {cityData
+              ? `${cityData.name}, ${cityData.sys.country}`
+              : "Enter City"}
+          </p>
           <span>...</span>
         </div>
         <img

@@ -16,7 +16,6 @@ export const request = async (city) => {
       const weatherURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${key}`;
       const weatherRes = await fetch(weatherURL);
       const weather = await weatherRes.json();
-      console.log(weather);
       return weather;
     } else {
       console.log(lat);
